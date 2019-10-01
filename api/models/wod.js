@@ -9,4 +9,10 @@ const wodSchema = mongoose.Schema({
     example: Array
 });
 
+wodSchema.virtual('responses', {
+    ref: 'Response',
+    localField: '_id',
+    foreignField: 'wod'
+});
+
 module.exports = mongoose.model('Wod', wodSchema);
