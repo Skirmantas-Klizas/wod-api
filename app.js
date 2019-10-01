@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const wodRoutes = require('./api/routes/wods');
 const responseRoutes = require('./api/routes/responses');
+const userRoutes = require('./api/routes/users');
 
 mongoose.connect(
     'mongodb+srv://Admin:' +
@@ -38,6 +39,7 @@ app.use((req, res, next) => {
 
 app.use('/wods', wodRoutes);
 app.use('/responses', responseRoutes);
+app.use('/users', userRoutes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
