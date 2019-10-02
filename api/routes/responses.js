@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
             responses: responses
         });
     } catch {
-        res.status(500).json({ message: error });
+        res.status(400).json({ message: error });
     }
 });
 
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
             wod: result.wod
         });
     } catch {
-        res.status(500).json({ message: 'aaaa' });
+        res.status(400).json({ message: 'aaaa' });
     }
 });
 
@@ -43,7 +43,7 @@ router.get('/:responseId', async (req, res) => {
 
         res.status(200).json({ response: response });
     } catch (error) {
-        res.status(500).json({ message: error });
+        res.status(404).json({ message: error });
     }
 });
 
