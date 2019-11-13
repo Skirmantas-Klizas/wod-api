@@ -27,14 +27,6 @@ exports.postResponse = async (req, res) => {
     });
 
     try {
-        // const response = new Response({
-        //     _id: new mongoose.Types.ObjectId(),
-        //     adjustments: req.body.adjustments,
-        //     time: req.body.time,
-        //     comment: req.body.comment,
-        //     wod: req.body.wod,
-        //     user: req.userData.userId
-        // });
         const result = await response.save();
         res.status(201).json({
             message: 'Response created successfully',
