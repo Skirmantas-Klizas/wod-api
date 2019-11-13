@@ -6,7 +6,7 @@ const wodSchema = mongoose.Schema({
     type: { type: String, required: true },
     difficulty: { type: String, required: true },
     workout: { type: String, required: true },
-    example: Array
+    example: { type: String, required: true }
 });
 
 wodSchema.virtual('responses', {
