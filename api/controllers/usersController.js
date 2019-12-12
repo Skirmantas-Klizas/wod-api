@@ -34,6 +34,7 @@ exports.login = async (req, res) => {
                 const generatedToken = jwt.sign(
                     {
                         userId: userResult._id,
+                        name: userResult.name,
                         email: userResult.email,
                         role: userResult.role
                     },
@@ -62,7 +63,6 @@ exports.signup = async (req, res) => {
         } else {
             bcrypt.hash(req.body.password, 10, (err, hash) => {
                 if (err) {
-                    console.log('asadasdas');
                     return res.status(400).json({ message: err });
                 } else {
                     const user = new User({

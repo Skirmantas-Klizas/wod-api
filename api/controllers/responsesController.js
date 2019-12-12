@@ -1,10 +1,13 @@
 const mongoose = require('mongoose');
 const Response = require('../models/response');
 const Wod = require('../models/wod');
+const User = require('../models/user');
 
 exports.getAllResponses = async (req, res) => {
     try {
-        const responses = await Response.find().select('-__v');
+        const responses = await Response.find()
+            .select('-__v')
+            .populate('user');
         res.status(200).json({
             count: responses.length,
             responses: responses
@@ -28,17 +31,25 @@ exports.postResponse = async (req, res) => {
 
     try {
         const result = await response.save();
-        res.status(201).json({
-            message: 'Response created successfully',
-            createdReview: {
-                _id: result._id,
-                adjustments: result.adjustments,
-                time: result.time,
-                comment: result.comment,
-                wod: result.wod,
-                user: result.user
-            }
-        });
+        await result.populate('user').execPopulate();
+        if (
+            result.adjustments !== undefined &&
+            result.time !== undefined &&
+            result.comment !== undefined &&
+            result.wod !== undefined
+        ) {
+            res.status(201).json({
+                message: 'Response created successfully',
+                createdReview: {
+                    _id: result._id,
+                    adjustments: result.adjustments,
+                    time: result.time,
+                    comment: result.comment,
+                    wod: result.wod,
+                    user: result.user
+                }
+            });
+        }
     } catch {
         res.status(400).json({ message: 'Error while posting new response' });
     }
@@ -85,7 +96,7 @@ exports.updateResponse = async (req, res) => {
                 throw Error;
             }
         } else {
-            throw Error;
+            res.status(401).json({ message: 'Auth failed' });
         }
     } catch {
         res.status(400).json({ message: 'Error while updating response' });
@@ -112,7 +123,7 @@ exports.deleteResponse = async (req, res) => {
                 throw Error;
             }
         } else {
-            throw Error;
+            res.status(401).json({ message: 'Auth failed' });
         }
     } catch {
         res.status(400).json({ message: 'Error while deleting response' });

@@ -1,11 +1,17 @@
-// const Review = require('../models/review');
 const mongoose = require('mongoose');
 const Wod = require('../models/wod');
 const Response = require('../models/response');
 
 exports.getAllWods = async (req, res) => {
     try {
-        const wods = await Wod.find().select('-__v');
+        const wods = await Wod.find()
+            .select('-__v')
+            .populate({
+                path: 'responses',
+                populate: {
+                    path: 'user'
+                }
+            });
 
         res.status(200).json({
             count: wods.length,
@@ -15,6 +21,19 @@ exports.getAllWods = async (req, res) => {
         res.status(400).json({ message: 'Error while retrieving wods data' });
     }
 };
+
+// exports.getAllWods = async (req, res) => {
+//     try {
+//         const wods = await Wod.find().select('-__v');
+
+//         res.status(200).json({
+//             count: wods.length,
+//             wods: wods
+//         });
+//     } catch {
+//         res.status(400).json({ message: 'Error while retrieving wods data' });
+//     }
+// };
 
 exports.postWod = async (req, res) => {
     try {
@@ -28,16 +47,28 @@ exports.postWod = async (req, res) => {
         });
 
         const result = await wod.save();
+        await result.populate('reviews').execPopulate();
         res.status(201).json({
-            message: 'Wod created successfully',
-            createdWod: {
+            message: 'Book created successfully',
+            createdBook: {
                 _id: result._id,
                 title: result.title,
                 type: result.type,
                 difficulty: result.difficulty,
                 workout: result.workout,
-                example: result.example
+                example: result.example,
+                responses: result.responses
             }
+            // res.status(201).json({
+            //     message: 'Wod created successfully',
+            //     createdWod: {
+            //         _id: result._id,
+            //         title: result.title,
+            //         type: result.type,
+            //         difficulty: result.difficulty,
+            //         workout: result.workout,
+            //         example: result.example
+            //     }
         });
     } catch {
         res.status(400).json({ error: 'Error while posting a new wod' });
@@ -47,7 +78,9 @@ exports.postWod = async (req, res) => {
 exports.getWod = async (req, res) => {
     try {
         const wodId = req.params.wodId;
-        const wod = await Wod.findById(wodId).select('-__v');
+        const wod = await Wod.findById(wodId)
+            .select('-__v')
+            .populate('responses');
         res.status(200).json({ wod: wod });
     } catch {
         res.status(404).json({
@@ -76,7 +109,6 @@ exports.deleteWod = async (req, res) => {
     try {
         let wodId = req.params.wodId;
         const wod = await Wod.deleteOne({ _id: wodId });
-        console.log(wod);
         if (wod.n > 0) {
             Response.deleteMany({ wod: wodId })
                 .exec()
