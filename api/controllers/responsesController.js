@@ -23,7 +23,6 @@ exports.postResponse = async (req, res) => {
     const response = new Response({
         _id: new mongoose.Types.ObjectId(),
         adjustments: req.body.adjustments,
-        time: req.body.time,
         comment: req.body.comment,
         wod: req.body.wod,
         user: req.userData.userId
@@ -34,7 +33,6 @@ exports.postResponse = async (req, res) => {
         await result.populate('user').execPopulate();
         if (
             result.adjustments !== undefined &&
-            result.time !== undefined &&
             result.comment !== undefined &&
             result.wod !== undefined
         ) {
@@ -43,7 +41,6 @@ exports.postResponse = async (req, res) => {
                 createdReview: {
                     _id: result._id,
                     adjustments: result.adjustments,
-                    time: result.time,
                     comment: result.comment,
                     wod: result.wod,
                     user: result.user
