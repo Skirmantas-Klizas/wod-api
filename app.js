@@ -19,6 +19,7 @@ mongoose.connect(
 );
 
 app.use(morgan('dev'));
+app.use('/wodImages', express.static('bookImages'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
