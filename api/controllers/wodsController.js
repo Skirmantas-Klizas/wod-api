@@ -47,10 +47,10 @@ exports.postWod = async (req, res) => {
         });
 
         const result = await wod.save();
-        await result.populate('reviews').execPopulate();
+        await result.populate('responses').execPopulate();
         res.status(201).json({
-            message: 'Book created successfully',
-            createdBook: {
+            message: 'Wod created successfully',
+            createdWod: {
                 _id: result._id,
                 title: result.title,
                 type: result.type,
