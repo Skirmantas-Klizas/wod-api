@@ -38,7 +38,7 @@ exports.postResponse = async (req, res) => {
         ) {
             res.status(201).json({
                 message: 'Response created successfully',
-                createdReview: {
+                createdResponse: {
                     _id: result._id,
                     adjustments: result.adjustments,
                     comment: result.comment,
